@@ -148,15 +148,13 @@ const handleAddSchedule = async (scheduleData) => {
     }
   };
 
-  const navigateMonth = (direction) => {
+const navigateMonth = (direction) => {
     setCurrentDate(prev => {
       const newDate = new Date(prev);
       newDate.setMonth(prev.getMonth() + direction);
       return newDate;
     });
   };
-};
-
   // Create filtered schedules based on selected season
   const filteredSchedules = selectedSeason === 'All' 
     ? schedules 
@@ -175,13 +173,14 @@ const handleAddSchedule = async (scheduleData) => {
     return 'Winter';
   };
 
-  if (loading) {
+if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
         <ApperIcon name="Loader2" className="w-8 h-8 animate-spin text-forest" />
         <span className="ml-2 text-gray-600">Loading crop calendar...</span>
       </div>
     );
+  }
 
   return (
     <div className="space-y-6">
@@ -721,8 +720,217 @@ const AddScheduleModal = ({ isOpen, onClose, onAdd, selectedDate, fields = [] })
             </div>
           </form>
         </div>
+</div>
+    </div>
+  );
+};
+
+// AddScheduleModal Component Implementation
+const AddScheduleModal = ({ isOpen, onClose, onAdd, selectedDate, fields = [] }) => {
+  const [formData, setFormData] = useState({
+    cropName: '',
+    type: 'planting',
+    fieldId: '',
+    notes: '',
+    priority: 'medium'
+  });
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Reset form when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        cropName: '',
+        type: 'planting',
+        fieldId: '',
+        notes: '',
+        priority: 'medium'
+      });
+      setErrors({});
+    }
+  }, [isOpen]);
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.cropName.trim()) {
+      newErrors.cropName = 'Crop name is required';
+    }
+    
+    if (!formData.fieldId) {
+      newErrors.fieldId = 'Please select a field';
+    }
+    
+    if (!selectedDate) {
+      newErrors.date = 'Please select a date';
+    }
+    
+    return newErrors;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await onAdd(formData);
+    } catch (error) {
+      console.error('Submit error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">Add Crop Schedule</h3>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+              type="button"
+            >
+              <ApperIcon name="X" size={20} />
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Selected Date Display */}
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-sm font-medium text-gray-700">
+                Selected Date: {selectedDate ? selectedDate.toLocaleDateString() : 'No date selected'}
+              </p>
+              {errors.date && <p className="text-sm text-red-600 mt-1">{errors.date}</p>}
+            </div>
+
+            {/* Crop Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Crop Name *
+              </label>
+              <input
+                type="text"
+                value={formData.cropName}
+                onChange={(e) => handleInputChange('cropName', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-fresh focus:border-fresh"
+                placeholder="Enter crop name"
+              />
+              {errors.cropName && <p className="text-sm text-red-600 mt-1">{errors.cropName}</p>}
+            </div>
+
+            {/* Activity Type */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Activity Type
+              </label>
+              <select
+                value={formData.type}
+                onChange={(e) => handleInputChange('type', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-fresh focus:border-fresh"
+              >
+                <option value="planting">Planting</option>
+                <option value="watering">Watering</option>
+                <option value="fertilizing">Fertilizing</option>
+                <option value="harvesting">Harvesting</option>
+                <option value="pruning">Pruning</option>
+                <option value="pest-control">Pest Control</option>
+              </select>
+            </div>
+
+            {/* Field Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Field *
+              </label>
+              <select
+                value={formData.fieldId}
+                onChange={(e) => handleInputChange('fieldId', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-fresh focus:border-fresh"
+              >
+                <option value="">Select a field</option>
+                {fields.map(field => (
+                  <option key={field.Id} value={field.Id}>
+                    {field.name} ({field.size} acres)
+                  </option>
+                ))}
+              </select>
+              {errors.fieldId && <p className="text-sm text-red-600 mt-1">{errors.fieldId}</p>}
+            </div>
+
+            {/* Priority */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Priority
+              </label>
+              <select
+                value={formData.priority}
+                onChange={(e) => handleInputChange('priority', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-fresh focus:border-fresh"
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+
+            {/* Notes */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Notes
+              </label>
+              <textarea
+                value={formData.notes}
+                onChange={(e) => handleInputChange('notes', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-fresh focus:border-fresh"
+                rows={3}
+                placeholder="Additional notes..."
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                className="flex-1"
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Adding...' : 'Add Schedule'}
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
 };
+
 export default Crops;
