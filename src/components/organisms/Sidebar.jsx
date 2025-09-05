@@ -154,7 +154,6 @@ const Sidebar = ({ className }) => {
                         : "text-gray-200 hover:bg-forest/70 hover:text-white",
                       "group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors"
                     )}
-                    onClick={() => setIsMobileOpen(false)}
 onClick={() => setIsMobileOpen(false)}
                   >
                     <ApperIcon
@@ -166,6 +165,7 @@ onClick={() => setIsMobileOpen(false)}
                     />
                     {item.name}
                   </Link>
+                ))}
               </nav>
               
               {/* Mobile user section and logout */}

@@ -336,5 +336,3 @@ class CropScheduleService {
 
 const cropScheduleService = new CropScheduleService();
 export default cropScheduleService;
-
-export default new CropScheduleService();

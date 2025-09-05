@@ -271,5 +271,3 @@ class InspectionService {
 
 const inspectionService = new InspectionService();
 export default inspectionService;
-
-export default new InspectionService();
