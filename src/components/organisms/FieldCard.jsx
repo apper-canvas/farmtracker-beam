@@ -53,33 +53,33 @@ const FieldCard = ({ field, onView, onEdit }) => {
               />
             </div>
             <div>
-              <h3 className="font-semibold text-lg text-gray-900">{field.name}</h3>
-              <p className="text-sm text-gray-600">{field.cropType}</p>
+<h3 className="font-semibold text-lg text-gray-900">{field.name_c || field.Name}</h3>
+              <p className="text-sm text-gray-600">{field.crop_type_c || field.cropType}</p>
             </div>
           </div>
-          <StatusBadge status={field.status} showIcon={false} />
+<StatusBadge status={field.status_c || field.status} showIcon={false} />
         </div>
 
         <div className="space-y-3 mb-4">
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Size:</span>
-            <span className="font-medium">{field.size} acres</span>
+            <span className="font-medium">{field.size_c || field.size} acres</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Planted:</span>
-            <span className="font-medium">{formatDate(field.plantingDate)}</span>
+            <span className="font-medium">{formatDate(field.planting_date_c || field.plantingDate)}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Growth Stage:</span>
             <span 
-              className={`px-2 py-1 rounded-full text-xs font-medium ${getGrowthStageColor(field.growthStage)}`}
+              className={`px-2 py-1 rounded-full text-xs font-medium ${getGrowthStageColor(field.growth_stage_c || field.growthStage)}`}
             >
-              {field.growthStage}
+              {field.growth_stage_c || field.growthStage}
             </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Last Inspection:</span>
-            <span className="font-medium">{formatDate(field.lastInspection)}</span>
+            <span className="font-medium">{formatDate(field.last_inspection_c || field.lastInspection)}</span>
           </div>
         </div>
 

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardContent } from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import FormField from "@/components/molecules/FormField";
-import StatusBadge from "@/components/molecules/StatusBadge";
-import ApperIcon from "@/components/ApperIcon";
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader } from "@/components/atoms/Card";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
-import inspectionService from "@/services/api/inspectionService";
 import activityService from "@/services/api/activityService";
+import inspectionService from "@/services/api/inspectionService";
+import ApperIcon from "@/components/ApperIcon";
+import StatusBadge from "@/components/molecules/StatusBadge";
+import FormField from "@/components/molecules/FormField";
+import Button from "@/components/atoms/Button";
 
 const FieldDetailModal = ({ field, onClose, onUpdate }) => {
   const [activeTab, setActiveTab] = useState("details");
@@ -47,13 +47,12 @@ const FieldDetailModal = ({ field, onClose, onUpdate }) => {
   const handleAddNote = async () => {
     if (!newNote.trim()) return;
 
-    try {
+try {
       const newInspection = {
         fieldId: field.Id,
         date: new Date().toISOString(),
         notes: newNote,
-        status: field.status,
-        userId: "user-1"
+        status: field.status_c || field.status,
       };
 
       await inspectionService.create(newInspection);
@@ -122,12 +121,12 @@ const FieldDetailModal = ({ field, onClose, onUpdate }) => {
                 />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white font-display">{field.name}</h2>
-                <p className="text-white/90">{field.cropType} • {field.size} acres</p>
+<h2 className="text-2xl font-bold text-white font-display">{field.name_c || field.Name}</h2>
+                <p className="text-white/90">{field.crop_type_c || field.cropType} • {field.size_c || field.size} acres</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <StatusBadge status={field.status} />
+<StatusBadge status={field.status_c || field.status} />
               <Button
                 variant="ghost"
                 size="icon"
@@ -163,41 +162,43 @@ const FieldDetailModal = ({ field, onClose, onUpdate }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
                   <label className="text-sm font-medium text-gray-600">Field Size</label>
-                  <p className="text-lg font-semibold text-gray-900">{field.size} acres</p>
+                  <p className="text-lg font-semibold text-gray-900">{field.size_c || field.size} acres</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-600">Crop Type</label>
-                  <p className="text-lg font-semibold text-gray-900">{field.cropType}</p>
+                  <p className="text-lg font-semibold text-gray-900">{field.crop_type_c || field.cropType}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-600">Planting Date</label>
-                  <p className="text-lg font-semibold text-gray-900">{formatDate(field.plantingDate)}</p>
+                  <p className="text-lg font-semibold text-gray-900">{formatDate(field.planting_date_c || field.plantingDate)}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-600">Growth Stage</label>
-                  <p className="text-lg font-semibold text-gray-900">{field.growthStage}</p>
+                  <p className="text-lg font-semibold text-gray-900">{field.growth_stage_c || field.growthStage}</p>
                 </div>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="text-sm font-medium text-gray-600">Last Inspection</label>
-                  <p className="text-lg font-semibold text-gray-900">{formatDate(field.lastInspection)}</p>
+                  <p className="text-lg font-semibold text-gray-900">{formatDate(field.last_inspection_c || field.lastInspection)}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-600">Current Status</label>
                   <div className="mt-1">
-                    <StatusBadge status={field.status} />
+                    <StatusBadge status={field.status_c || field.status} />
                   </div>
                 </div>
               </div>
 
-              {field.notes && field.notes.length > 0 && (
+{((field.notes_c && field.notes_c.trim()) || (field.notes && field.notes.length > 0)) && (
                 <div>
                   <label className="text-sm font-medium text-gray-600 mb-2 block">Field Notes</label>
                   <div className="bg-gray-50 rounded-lg p-4">
-                    {field.notes.map((note, index) => (
-                      <p key={index} className="text-gray-700 mb-2 last:mb-0">{note}</p>
+                    {field.notes_c ? (
+                      <p className="text-gray-700">{field.notes_c}</p>
+                    ) : field.notes?.map((note, index) => (
+<p key={index} className="text-gray-700 mb-2 last:mb-0">{note}</p>
                     ))}
                   </div>
                 </div>

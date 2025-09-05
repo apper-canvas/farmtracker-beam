@@ -100,7 +100,7 @@ const AddFieldModal = ({ onClose, onAdd }) => {
     setLoading(true);
     
     try {
-      const newField = {
+const newField = {
         name: formData.name.trim(),
         size: parseFloat(formData.size),
         cropType: formData.cropType,

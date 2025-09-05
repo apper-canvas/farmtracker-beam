@@ -462,7 +462,7 @@ if (loading) {
                               <span className="text-sm text-gray-600">{schedule.variety}</span>
                             </td>
                             <td className="py-4 px-4">
-                              <span className="text-sm font-medium">{field?.name || 'Unknown Field'}</span>
+<span className="text-sm font-medium">{field?.name_c || field?.Name || 'Unknown Field'}</span>
                             </td>
                             <td className="py-4 px-4">
                               <span className="text-sm text-gray-600">
@@ -659,9 +659,9 @@ const AddScheduleModal = ({ isOpen, onClose, onAdd, selectedDate, fields = [] })
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-fresh focus:border-fresh"
               >
                 <option value="">Select a field</option>
-                {fields.map(field => (
+{fields.map(field => (
                   <option key={field.Id} value={field.Id}>
-                    {field.name} ({field.size} acres)
+                    {field.name_c || field.Name} ({field.size_c || field.size} acres)
                   </option>
                 ))}
               </select>

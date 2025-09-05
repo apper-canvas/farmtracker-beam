@@ -46,11 +46,11 @@ const Dashboard = () => {
   if (error) return <Error message={error} onRetry={loadDashboardData} />;
 
   // Calculate metrics
-  const totalFields = fields.length;
-  const activeFields = fields.filter(field => field.status !== "inactive").length;
-  const healthyFields = fields.filter(field => field.status === "healthy").length;
-  const fieldsNeedingAttention = fields.filter(field => field.status === "needs attention").length;
-  const readyToHarvest = fields.filter(field => field.status === "ready to harvest").length;
+const totalFields = fields.length;
+  const activeFields = fields.filter(field => (field.status_c || field.status) !== "inactive").length;
+  const healthyFields = fields.filter(field => (field.status_c || field.status) === "healthy").length;
+  const fieldsNeedingAttention = fields.filter(field => (field.status_c || field.status) === "needs attention").length;
+  const readyToHarvest = fields.filter(field => (field.status_c || field.status) === "ready to harvest").length;
 
   const healthPercentage = totalFields > 0 ? Math.round((healthyFields / totalFields) * 100) : 0;
 
@@ -161,15 +161,15 @@ const Dashboard = () => {
                   </div>
 
                   <div className="space-y-3">
-                    {fields.slice(0, 5).map((field) => (
+{fields.slice(0, 5).map((field) => (
                       <div key={field.Id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div className="flex items-center space-x-3">
                           <div className="p-2 bg-white rounded-lg">
                             <ApperIcon name="Sprout" className="w-4 h-4 text-fresh" />
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">{field.name}</p>
-                            <p className="text-sm text-gray-600">{field.cropType} • {field.size} acres</p>
+                            <p className="font-medium text-gray-900">{field.name_c || field.Name}</p>
+                            <p className="text-sm text-gray-600">{field.crop_type_c} • {field.size_c} acres</p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-3">

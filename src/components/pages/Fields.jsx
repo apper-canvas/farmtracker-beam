@@ -45,11 +45,11 @@ const Fields = () => {
   const filterFields = () => {
     let filtered = fields;
 
-    if (searchTerm.trim()) {
+if (searchTerm.trim()) {
       filtered = filtered.filter(field =>
-        field.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        field.cropType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        field.status.toLowerCase().includes(searchTerm.toLowerCase())
+        (field.name_c || field.Name || field.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (field.crop_type_c || field.cropType || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (field.status_c || field.status || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -115,24 +115,24 @@ const Fields = () => {
         <div className="bg-white rounded-lg shadow-md p-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-forest">{fields.length}</div>
+<div className="text-2xl font-bold text-forest">{fields.length}</div>
               <div className="text-sm text-gray-600">Total Fields</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-green-600">
-                {fields.filter(f => f.status === "healthy").length}
+                {fields.filter(f => (f.status_c || f.status) === "healthy").length}
               </div>
               <div className="text-sm text-gray-600">Healthy</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-amber-600">
-                {fields.filter(f => f.status === "needs attention").length}
+                {fields.filter(f => (f.status_c || f.status) === "needs attention").length}
               </div>
               <div className="text-sm text-gray-600">Need Attention</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-amber-600">
-                {fields.filter(f => f.status === "ready to harvest").length}
+                {fields.filter(f => (f.status_c || f.status) === "ready to harvest").length}
               </div>
               <div className="text-sm text-gray-600">Ready to Harvest</div>
             </div>
